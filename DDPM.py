@@ -51,15 +51,3 @@ class LinearNoiseScheduler:
             z = torch.randn(xt.shape).to(xt.device)
             return mean + sigma * z, x0
         
-def get_time_embedding(time_steps, t_emb_dim):
-    """
-    Generates time embeddings for the given time steps.
-    """
-    factor = 10000 ** (torch.arange(
-        start = 0, end = t_emb_dim / 2, device = time_steps.device) / (t_emb_dim // 2))
-    t_emb = time_steps[:, None].repeat(1, t_emb_dim // 2) / factor
-    t_emb = torch.cat([torch.sin(t_emb), torch.cos(t_emb)], dim=-1)
-    return t_emb
-
-class DownBlock(nn.Mod)
-    
