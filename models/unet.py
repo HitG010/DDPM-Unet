@@ -16,7 +16,7 @@ def get_time_embedding(time_steps, t_emb_dim):
 
 class DownBlock(nn.Module):
     def __init__(self, in_channels, out_channels, time_emb_dim, down_sample = True, num_head = 4, num_layers = 1):
-        super().init__()
+        super().__init__()
         self.down_sample = down_sample
         self.num_layers = num_layers
         self.resnet_conv_first = nn.ModuleList([
@@ -61,7 +61,7 @@ class DownBlock(nn.Module):
         """
         out = x
         
-        for i in range(len(self.num_layers)):
+        for i in range(self.num_layers):
             resnet_input = out
             out = self.resnet_conv_first[i](out)
             out = out + self.t_emb_layers[i](t_emb)[:, :, None, None]
@@ -96,7 +96,7 @@ class MidBlock(nn.Module):
             nn.Sequential(
                 nn.SiLU(),
                 nn.Linear(time_emb_dim, out_channels),
-            ),
+            )
             for _ in range(num_layers + 1)
         ])
         
@@ -170,6 +170,7 @@ class UpBlock(nn.Module):
                 nn.SiLU(),
                 nn.Linear(time_emb_dim, out_channels),
             ) for _ in range(num_layers)
+        ])
         
         self.resnet_conv_second = nn.ModuleList([
             nn.Sequential(
@@ -216,7 +217,7 @@ class UpBlock(nn.Module):
         return out
         
         
-class UNet(nn.Module):
+class Unet(nn.Module):
     def __init__(self, model_config):
         """ Initializes the UNet model with the given configuration. """
         super().__init__()
@@ -242,7 +243,7 @@ class UNet(nn.Module):
         )
         
         self.up_sample = list(reversed(self.down_sample))
-        self.conv_in = nn.Conv2d(im_channels, self.down_channels[0], kernel_size=3, padding= (1, 1))
+        self.conv_in = nn.Conv2d(in_channels, self.down_channels[0], kernel_size=3, padding= (1, 1))
         
         self.downs = nn.ModuleList([])
         
